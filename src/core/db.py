@@ -1,3 +1,4 @@
+# ruff: noqa: F401
 import os
 
 from sqlalchemy import create_engine
@@ -13,8 +14,22 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 
+# noinspection PyUnresolvedReferences
 def init_db():
-    from src.components.users.models import User  # noqa: F401
+    from src.components.access_control.models import (
+        FeatureModule,
+        Group,
+        GroupRole,
+        Permission,
+        Role,
+        RolePermission,
+        UserGroup,
+        UserPermission,
+        UserRole,
+    )
+    from src.components.audit_log.models import AuditLog
+    from src.components.organizations.models import Organization, UserOrganization
+    from src.components.users.models import User
 
     # Create all tables in the provided engine
     Base.metadata.create_all(bind=engine)

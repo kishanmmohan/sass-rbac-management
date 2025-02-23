@@ -1,21 +1,21 @@
 from pydantic import BaseModel
 
+from .models import UserTypeEnum
+
 
 class UserBase(BaseModel):
-    username: str
+    name: str
     email: str
+    auth0_id: str
     is_active: bool = True
+    user_type: UserTypeEnum = UserTypeEnum.STAFF
 
 
 class UserCreate(UserBase):
     pass
 
 
-class UserUpdate(UserBase):
-    pass
-
-
 class User(UserBase):
     id: int
-    username: str
+    name: str
     email: str
