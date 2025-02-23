@@ -26,6 +26,7 @@ erDiagram
     USER_ORGANIZATION {
         int user_id FK
         int organization_id FK
+        enum user_type
     }
 
     GROUP {

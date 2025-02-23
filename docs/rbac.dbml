@@ -23,6 +23,7 @@ Table Organization {
 Table UserOrganization {
     user_id int [ref: > User.id]
     organization_id int [ref: > Organization.id]
+    user_type enum
     indexes {
         (user_id, organization_id) [unique]
     }

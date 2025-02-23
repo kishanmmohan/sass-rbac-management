@@ -1,8 +1,16 @@
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
+import enum
+
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Enum
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
 from src.core.db import Base
+
+
+class OrgUserTypeEnum(enum.Enum):
+    ORG_OWNER = "org_owner"
+    ORG_ADMIN = "org_admin"
+    ORG_STAFF = "org_staff"
 
 
 class Organization(Base):
@@ -26,6 +34,7 @@ class UserOrganization(Base):
 
     user_id = Column(Integer, ForeignKey("user.id", ondelete="CASCADE"), primary_key=True)
     organization_id = Column(Integer, ForeignKey("organization.id", ondelete="CASCADE"), primary_key=True)
+    user_type = Column(Enum(OrgUserTypeEnum), nullable=False)
 
     user = relationship("User", back_populates="organizations")
     organization = relationship("Organization", back_populates="users")
