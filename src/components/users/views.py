@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 
 from src.core.db import get_db
@@ -13,7 +13,7 @@ router = APIRouter()
 
 
 # Dependency to get UserService
-def get_user_service(db: Session = Depends(get_db)):
+def get_user_service(_: Request, db: Session = Depends(get_db)):
     user_repo = UserRepository(db)
     return UserService(user_repo)
 
