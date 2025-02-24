@@ -1,18 +1,12 @@
-# Enum for User Type
-import enum
+
 
 from sqlalchemy import Boolean, Column, DateTime, Enum, Integer, String
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
 from src.core.db import Base
+from .enums import UserTypeEnum
 
-
-class UserTypeEnum(enum.Enum):
-    SUPER_ADMIN = "super_admin"
-    ADMIN = "admin"
-    STAFF = "staff"
-    ORG_USER = "org_user"
 
 
 class User(Base):

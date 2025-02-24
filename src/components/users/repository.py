@@ -11,11 +11,11 @@ class UserRepository:
         self.db_session = db_session
 
     def create_user(self, name: str, email: str, auth0_id: str, user_type: str, is_active: bool = True) -> User:
-        user = User(name=name, email=email, auth0_id=auth0_id, user_type=user_type, is_active=is_active)
-        self.db_session.add(user)
+        user_obj = User(name=name, email=email, auth0_id=auth0_id, user_type=user_type, is_active=is_active)
+        self.db_session.add(user_obj)
         self.db_session.commit()
-        self.db_session.refresh(user)
-        return user
+        self.db_session.refresh(user_obj)
+        return user_obj
 
     def get_user_by_id(self, user_id: int) -> Optional[User]:
         return self.db_session.query(User).get(User.id == user_id)

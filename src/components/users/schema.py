@@ -1,31 +1,42 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
+from typing import Optional
+from datetime import datetime
 
-from .models import UserTypeEnum
-
-
-class UserBase(BaseModel):
-    name: str
-    email: str
-    auth0_id: str
-    is_active: bool = True
-    user_type: UserTypeEnum = UserTypeEnum.STAFF
+from .enums import UserTypeEnum
+from ...core import BaseResponse
 
 
-class UserCreate(UserBase):
-    pass
-
-
-class User(UserBase):
+class UserShortSchema(BaseModel):
     id: int
-    name: str
-    email: str
     auth0_id: str
+    name: str
+    email: EmailStr
     is_active: bool
-    user_type: UserTypeEnum
 
 
-class UserUpdate(UserBase):
+class UserDetailSchema(UserShortSchema):
+    auth0_id: str
     name: str
     email: str
     is_active: bool
     user_type: UserTypeEnum
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+
+class UserCreateSchema(BaseModel):
+    name: str
+    email: EmailStr
+    auth0_id: str
+    user_type: UserTypeEnum = UserTypeEnum.ORG_USER
+
+
+class UserUpdateSchema(BaseModel):
+    name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    user_type: Optional[UserTypeEnum] = None
+    is_active: Optional[bool] = None
+
+
+class UserCreateResponseSchema(BaseResponse):
+    data: UserDetailSchema
