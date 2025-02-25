@@ -19,7 +19,7 @@ class OrganizationRepository:
         return organization
 
     def get_organization_by_id(self, org_id: int) -> Optional[Organization]:
-        return self.db_session.query(Organization).filter(Organization.id == org_id).first()
+        return self.db_session.get(Organization, org_id)
 
     def get_all_organizations(self, is_super_admin: bool, user_id: Optional[int] = None,
                               search_query: Optional[str] = None, limit: int = 10, offset: int = 0) -> List[
