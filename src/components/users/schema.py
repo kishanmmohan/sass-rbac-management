@@ -1,12 +1,11 @@
 from pydantic import BaseModel, EmailStr
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 
 from .enums import UserTypeEnum
-from ...core import BaseResponse
 
 
-class UserShortSchema(BaseModel):
+class UserShort(BaseModel):
     id: int
     auth0_id: str
     name: str
@@ -14,7 +13,7 @@ class UserShortSchema(BaseModel):
     is_active: bool
 
 
-class UserDetailSchema(UserShortSchema):
+class UserDetail(UserShort):
     auth0_id: str
     name: str
     email: str
@@ -24,19 +23,15 @@ class UserDetailSchema(UserShortSchema):
     updated_at: Optional[datetime]
 
 
-class UserCreateSchema(BaseModel):
+class CreateUserRequest(BaseModel):
     name: str
     email: EmailStr
     auth0_id: str
     user_type: UserTypeEnum = UserTypeEnum.ORG_USER
 
 
-class UserUpdateSchema(BaseModel):
+class UpdateUserRequest(BaseModel):
     name: Optional[str] = None
     email: Optional[EmailStr] = None
     user_type: Optional[UserTypeEnum] = None
     is_active: Optional[bool] = None
-
-
-class UserCreateResponseSchema(BaseResponse):
-    data: UserDetailSchema

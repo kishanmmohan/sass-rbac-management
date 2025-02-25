@@ -1,4 +1,4 @@
-from typing import List, Optional, Type
+from typing import List, Optional
 
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
@@ -18,10 +18,10 @@ class UserRepository:
         return user_obj
 
     def get_user_by_id(self, user_id: int) -> Optional[User]:
-        return self.db_session.query(User).get(User.id == user_id)
+        return self.db_session.get(User, user_id)
 
     def get_all_users(self, search_query: Optional[str] = None, limit: int = 10, offset: int = 0,
-                      sort_by: Optional[str] = None, sort_order: str = 'asc') -> List[Type[User]]:
+                      sort_by: Optional[str] = None, sort_order: str = 'asc') -> List[User]:
         query = self.db_session.query(User)
         if search_query:
             query = query.filter(or_(User.name.ilike(f"%{search_query}%"), User.email.ilike(f"%{search_query}%")))
@@ -30,7 +30,7 @@ class UserRepository:
                 getattr(User, sort_by).desc() if sort_order == 'desc' else getattr(User, sort_by).asc())
         else:
             query = query.order_by(User.id)
-        return query.offset(offset).limit(limit).all()
+        return query.offset(offset).limit(limit).all()  # noqa
 
     def update_user(self, user_id: int, **kwargs) -> Optional[User]:
         user = self.get_user_by_id(user_id)
@@ -41,5 +41,11 @@ class UserRepository:
             self.db_session.refresh(user)
         return user
 
-    def deactivate_user(self, user_id: int) -> Optional[User]:
-        return self.update_user(user_id, is_active=False)
+    def delete_user(self, user_id: int) -> bool:
+        """Permanently delete a user from the database."""
+        user = self.get_user_by_id(user_id)
+        if user:
+            self.update_user(user_id, is_active=False)
+
+            return True
+        return False
