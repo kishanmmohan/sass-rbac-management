@@ -8,7 +8,7 @@ dependencies = [
     "celery>=5.4.0",
     "fastapi>=0.115.8",
     "httpx>=0.28.1",
-    "pydantic>=2.10.6",
+    "pydantic[email]>=2.10.6",
     "pydantic-settings>=2.8.0",
     "sqlalchemy>=2.0.38",
     "structlog>=25.1.0",
@@ -45,12 +45,12 @@ fixable = [
     "I001"
 ]
 ignore = [
-    "F405", # ignore may be undefined, or defined from star imports
+    "F405", # ignore may be undefined or defined from star imports
     "E722", # ignore blanket except
     "E731", # allow lambda
     "F811", # allow the repo to have unused function
     "F403", # allow import *
-    "F821", # allow adding relations to model by wrapping in ""
+    "F821", # allow adding relations to models by wrapping in ""
 ]
 
 [tool.pytest.ini_options]

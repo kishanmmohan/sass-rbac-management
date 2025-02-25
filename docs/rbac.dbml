@@ -1,0 +1,115 @@
+Table User {
+    id int [primary key]
+    name string
+    email string [unique]
+    auth0_id string [unique]
+    user_type enum
+    is_active bool
+    created_at timestamp
+    updated_at timestamp
+}
+
+Table Organization {
+    id int [primary key]
+    name string
+    slug string [unique]
+    is_active bool
+    created_at timestamp
+    updated_at timestamp
+    created_by int [ref: > User.id]
+    updated_by int [ref: > User.id]
+}
+
+Table UserOrganization {
+    user_id int [ref: > User.id]
+    organization_id int [ref: > Organization.id]
+    user_type enum
+    indexes {
+        (user_id, organization_id) [unique]
+    }
+}
+
+Table Group {
+    id int [primary key]
+    name string
+    organization_id int [ref: > Organization.id]
+    created_at timestamp
+    updated_at timestamp
+    created_by int [ref: > User.id]
+    updated_by int [ref: > User.id]
+    indexes {
+        (name, organization_id) [unique]
+    }
+}
+
+Table UserGroup {
+    user_id int [ref: > User.id]
+    group_id int [ref: > Group.id]
+    indexes {
+        (user_id, group_id) [unique]
+    }
+}
+
+Table Role {
+    id int [primary key]
+    name string
+    organization_id int [ref: > Organization.id]
+    created_by int [ref: > User.id]
+    updated_by int [ref: > User.id]
+    indexes {
+        (name, organization_id) [unique]
+    }
+}
+
+Table GroupRole {
+    group_id int [ref: > Group.id]
+    role_id int [ref: > Role.id]
+    indexes {
+        (group_id, role_id) [unique]
+    }
+}
+
+Table UserRole {
+    user_id int [ref: > User.id]
+    role_id int [ref: > Role.id]
+    indexes {
+        (user_id, role_id) [unique]
+    }
+}
+
+Table FeatureModule {
+    id int [primary key]
+    name string
+}
+
+Table Permission {
+    id int [primary key]
+    module_id int [ref: > FeatureModule.id]
+    action string
+    indexes {
+        (module_id, action) [unique]
+    }
+}
+
+Table RolePermission {
+    role_id int [ref: > Role.id]
+    permission_id int [ref: > Permission.id]
+    indexes {
+        (role_id, permission_id) [unique]
+    }
+}
+
+Table UserPermission {
+    user_id int [ref: > User.id]
+    permission_id int [ref: > Permission.id]
+    indexes {
+        (user_id, permission_id) [unique]
+    }
+}
+
+Table AuditLog {
+    id int [primary key]
+    user_id int [ref: > User.id]
+    action string
+    created_at timestamp
+}
