@@ -28,8 +28,8 @@ def event_loop():
 
 
 # Now we can safely import the application and database modules
-from main import create_application
 from core.db import Base, get_db, init_models
+from main import create_application
 
 
 # Override settings for testing (if needed)

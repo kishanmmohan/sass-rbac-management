@@ -17,10 +17,10 @@ RUN apt-get update && apt-get install -y \
 # Upgrade pip and install build tools
 RUN pip install --upgrade pip setuptools wheel build
 
-COPY requirements.txt .
+COPY requirements-prod.txt .
 
 # Install requirements
-RUN pip install --no-build-isolation --prefer-binary -r requirements.txt
+RUN pip install --no-build-isolation --prefer-binary -r requirements-prod.txt
 
 # Copy the rest of the application
 COPY src/ .
