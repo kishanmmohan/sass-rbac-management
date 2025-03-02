@@ -5,7 +5,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
 # Default to a file-based database
-SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///rbac.sqlite")
+SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/postgres")
 
 # Create engine and session
 engine = create_engine(SQLALCHEMY_DATABASE_URL)

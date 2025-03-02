@@ -1,0 +1,9 @@
+.venv/
+tests/
+rbac.sqlite
+pyproject.toml
+uv.lock
+.coverage
+.dockerignore
+.pytest_cache
+.ruff_cache
