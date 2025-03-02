@@ -12,7 +12,7 @@ logger = logging.getLogger("uvicorn")
 async def lifespan(_: FastAPI):
     logger.info("Starting up...")
     # Ensure the database and tables are created when the app starts
-    init_db()
+    await init_db()
     yield
     logger.info("Shutting down...")
 

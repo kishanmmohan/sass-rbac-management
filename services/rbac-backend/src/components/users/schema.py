@@ -15,10 +15,6 @@ class UserShort(BaseModel):
 
 
 class UserDetail(UserShort):
-    auth0_id: str
-    name: str
-    email: str
-    is_active: bool
     user_type: UserTypeEnum
     created_at: datetime
     updated_at: Optional[datetime]

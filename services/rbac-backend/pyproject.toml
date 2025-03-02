@@ -13,9 +13,7 @@ dependencies = [
     "sqlalchemy>=2.0.38",
     "structlog>=25.1.0",
     "uvicorn>=0.34.0",
-    "aiosqlite>=0.21.0",
-    "greenlet>=3.1.1",
-    "psycopg2-binary>=2.9.10",
+    "psycopg[binary]>=3.2.5",
 ]
 
 [dependency-groups]
@@ -27,6 +25,8 @@ dev = [
     "pytest-xdist>=3.6.1",
     "pytest-cov>=6.0.0",
     "ruff>=0.9.7",
+    "aiosqlite>=0.21.0",
+    "greenlet>=3.1.1",
 ]
 
 [tool.ruff]

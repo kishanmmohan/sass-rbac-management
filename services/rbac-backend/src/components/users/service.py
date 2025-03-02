@@ -10,11 +10,11 @@ class UserService:
     def __init__(self, user_repository: UserRepository):
         self.user_repository = user_repository
 
-    def get_user(self, user_id: int):
-        return self.user_repository.get_user_by_id(user_id)
+    async def get_user(self, user_id: int):
+        return await self.user_repository.get_user_by_id(user_id)
 
-    def create_user(self, user: CreateUserRequest) -> UserDetail:
-        user_obj = self.user_repository.create_user(
+    async def create_user(self, user: CreateUserRequest) -> UserDetail:
+        user_obj = await self.user_repository.create_user(
             user.name,
             str(user.email),
             user.auth0_id,
@@ -31,14 +31,14 @@ class UserService:
             updated_at=user_obj.updated_at
         )
 
-    def get_user_by_id(self, user_id: int) -> Optional[UserDetail]:
+    async def get_user_by_id(self, user_id: int) -> Optional[UserDetail]:
         """Fetch a user by ID."""
-        user = self.user_repository.get_user_by_id(user_id)
+        user = await self.user_repository.get_user_by_id(user_id)
         if user:
             return UserDetail(
                 id=user.id,
                 name=user.name,
-                email=user.email,
+                email=user.email,  # noqa
                 auth0_id=user.auth0_id,
                 user_type=user.user_type,
                 is_active=user.is_active,
@@ -47,10 +47,10 @@ class UserService:
             )
         return None
 
-    def get_all_users(self, search_query: Optional[str] = None, limit: int = 10, offset: int = 0,
-                      sort_by: Optional[str] = None, sort_order: str = 'asc') -> List[UserShort]:
+    async def get_all_users(self, search_query: Optional[str] = None, limit: int = 10, offset: int = 0,
+                            sort_by: Optional[str] = None, sort_order: str = 'asc') -> List[UserShort]:
         """Fetch a list of users with pagination and sorting."""
-        users = self.user_repository.get_all_users(
+        users = await self.user_repository.get_all_users(
             search_query=search_query, limit=limit, offset=offset, sort_by=sort_by, sort_order=sort_order
         )
         return [
@@ -63,9 +63,9 @@ class UserService:
             ) for user in users
         ]
 
-    def update_user(self, user_id: int, update_data: UpdateUserRequest) -> Optional[UserDetail]:
+    async def update_user(self, user_id: int, update_data: UpdateUserRequest) -> Optional[UserDetail]:
         """Update user details."""
-        updated_user = self.user_repository.update_user(user_id, **update_data.model_dump(exclude_unset=True))
+        updated_user = await self.user_repository.update_user(user_id, **update_data.model_dump(exclude_unset=True))
         if updated_user:
             return UserDetail(
                 id=updated_user.id,
@@ -79,6 +79,5 @@ class UserService:
             )
         return None
 
-    def delete_user(self, user_id: int) -> bool:
-        """Deletes a user permanently."""
-        return self.user_repository.delete_user(user_id)
+    async def delete_user(self, user_id: int) -> bool:
+        return await self.user_repository.delete_user(user_id)

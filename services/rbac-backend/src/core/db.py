@@ -1,21 +1,30 @@
-# ruff: noqa: F401
 import os
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.orm import declarative_base
 
-# Default to a file-based database
-SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/postgres")
+# Load database URL from environment variables
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql+asyncpg://postgres:postgres@rbac-db:5432/postgres")
 
-# Create engine and session
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# Create async database engine
+engine = create_async_engine(DATABASE_URL, echo=True)
 
+# Create session factory
+AsyncSessionLocal = async_sessionmaker(bind=engine, expire_on_commit=False, class_=AsyncSession)
+
+# Base class for ORM models
 Base = declarative_base()
 
 
+# Dependency to get the database session
+async def get_db():
+    async with AsyncSessionLocal() as session:
+        yield session
+
+
+# Function to initialize the database
 # noinspection PyUnresolvedReferences
-def init_db():
+async def init_db():
     from components.access_control.models import (
         FeatureModule,
         Group,
@@ -31,14 +40,7 @@ def init_db():
     from components.organizations.models import Organization, UserOrganization
     from components.users.models import User
 
-    # Create all tables in the provided engine
-    Base.metadata.create_all(bind=engine)
-    print("Database created and tables ensured!")
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
 
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+    print("Database initialized successfully!")
