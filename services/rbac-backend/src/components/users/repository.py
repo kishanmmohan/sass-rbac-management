@@ -3,7 +3,8 @@ from typing import List, Optional
 from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.middlewares.logging import log_method, get_logger
+from core.middlewares.logging import get_logger, log_method
+
 from .models import User
 
 

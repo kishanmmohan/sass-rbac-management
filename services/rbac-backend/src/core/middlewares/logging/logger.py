@@ -5,7 +5,7 @@ import structlog
 from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware
 
-from .config import request_id_var, path_var
+from .config import path_var, request_id_var
 
 
 class LoggingMiddleware(BaseHTTPMiddleware):

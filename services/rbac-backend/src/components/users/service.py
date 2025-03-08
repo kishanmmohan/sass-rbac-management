@@ -1,6 +1,7 @@
 from typing import List, Optional
 
-from core.middlewares.logging import log_method, get_logger
+from core.middlewares.logging import get_logger, log_method
+
 from .repository import UserRepository
 from .schema import CreateUserRequest, UpdateUserRequest, UserDetail, UserShort
 
