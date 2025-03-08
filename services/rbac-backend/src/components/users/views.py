@@ -11,7 +11,7 @@ from core.middlewares.logging import get_logger
 
 router = APIRouter()
 
-logging = get_logger("users.api")
+logging = get_logger()
 
 
 # Dependency to get UserService

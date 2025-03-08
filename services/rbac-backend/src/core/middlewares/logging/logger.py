@@ -60,7 +60,7 @@ class LoggingMiddleware(BaseHTTPMiddleware):
 
 
 # Get Logger
-def get_logger(name: str):
+def get_logger(name: str = "api"):
     """
     Get a structlog logger with the specified name.
 

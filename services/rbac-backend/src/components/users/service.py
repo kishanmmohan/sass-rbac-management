@@ -1,15 +1,15 @@
 from typing import List, Optional
 
-from core.middlewares.logging import get_logger, log_method
+from core.interface import BaseService
 
 from .repository import UserRepository
 from .schema import CreateUserRequest, UpdateUserRequest, UserDetail, UserShort
 
 
-class UserService:
+class UserService(BaseService):
     def __init__(self, user_repository: UserRepository):
+        super().__init__()
         self.user_repository = user_repository
-        self.logging = get_logger(self.__class__.__name__)
 
     async def get_user(self, user_id: int):
         return await self.user_repository.get_user_by_id(user_id)
@@ -32,7 +32,6 @@ class UserService:
             updated_at=user_obj.updated_at
         )
 
-    @log_method()
     async def get_user_by_id(self, user_id: int) -> Optional[UserDetail]:
         """Fetch a user by ID."""
         user = await self.user_repository.get_user_by_id(user_id)

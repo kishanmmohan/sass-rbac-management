@@ -3,7 +3,6 @@ import inspect
 import logging
 import sys
 from datetime import datetime
-
 import structlog
 from pydantic import BaseModel
 
@@ -42,14 +41,14 @@ def get_auto_path():
         str: The detected path in the format 'module.function' or 'class.function'.
     """
     stack = inspect.stack()
-    if len(stack) > 2:
-        caller_frame = stack[2]
-        module = caller_frame.frame.f_globals.get("__name__", "unknown")
-        function_name = caller_frame.function
-        if "self" in caller_frame.frame.f_locals:
-            class_name = caller_frame.frame.f_locals["self"].__class__.__name__
-            return f"{class_name}.{function_name}"
-        return f"{module}.{function_name}"
+    for frame in stack:
+        module = frame.frame.f_globals.get("__name__", "unknown")
+        function_name = frame.function
+        if "self" in frame.frame.f_locals:
+            class_name = frame.frame.f_locals["self"].__class__.__name__
+            full_method = f"{class_name}.{function_name}"
+            if "Repository" in class_name or "Service" in class_name:
+                return full_method
     return "unknown"
 
 
@@ -69,8 +68,9 @@ def add_context(_, __, event_dict):
     request_id = request_id_var.get()
     if request_id:
         event_dict["request_id"] = request_id
-    path = path_var.get() or get_auto_path()
-    event_dict["path"] = path
+    path = get_auto_path()
+    if path != "unknown":
+        event_dict["path"] = path
     event_dict["message"] = event_dict.pop("event", None)
     event_dict["name"] = event_dict.pop("logger", None)
     ordered_event_dict = {
@@ -78,9 +78,10 @@ def add_context(_, __, event_dict):
         "name": event_dict.pop("name", None),
         "timestamp": event_dict.pop("timestamp", None),
         "request_id": event_dict.pop("request_id", None),
-        "path": event_dict.pop("path", None),
         "message": event_dict.pop("message", None),
     }
+    if "path" in event_dict:
+        ordered_event_dict["path"] = event_dict.pop("path")
     ordered_event_dict.update(event_dict)
     return ordered_event_dict
 

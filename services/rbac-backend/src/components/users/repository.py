@@ -1,18 +1,13 @@
 from typing import List, Optional
 
 from sqlalchemy import or_, select
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.middlewares.logging import get_logger, log_method
+from core.interface import BaseRepository
 
 from .models import User
 
 
-class UserRepository:
-    def __init__(self, db_session: AsyncSession):
-        self.db_session = db_session
-        self.logging = get_logger(self.__class__.__name__)
-
+class UserRepository(BaseRepository):
     async def create_user(self, name: str, email: str, auth0_id: str, user_type: str, is_active: bool = True) -> User:
         user_obj = User(name=name, email=email, auth0_id=auth0_id, user_type=user_type, is_active=is_active)
         self.db_session.add(user_obj)
@@ -20,7 +15,6 @@ class UserRepository:
         await self.db_session.refresh(user_obj)
         return user_obj
 
-    @log_method()
     async def get_user_by_id(self, user_id: int) -> Optional[User]:
         result = await self.db_session.get(User, user_id)
         self.logging.info(f'User Result: {result.name}')
