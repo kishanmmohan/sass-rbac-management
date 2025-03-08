@@ -1,10 +1,10 @@
 from typing import List, Optional, Type
 
-from models import Organization, UserOrganization
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
-
 from src.components.users.models import User
+
+from models import Organization, UserOrganization
 
 
 class OrganizationRepository:

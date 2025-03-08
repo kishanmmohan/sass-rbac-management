@@ -1,20 +1,16 @@
-import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
 from core.db import init_db
-
-logger = logging.getLogger("uvicorn")
+from core.middlewares.logging import LoggingMiddleware
 
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    logger.info("Starting up...")
     # Ensure the database and tables are created when the app starts
     await init_db()
     yield
-    logger.info("Shutting down...")
 
 
 def create_application() -> FastAPI:
@@ -29,3 +25,5 @@ def create_application() -> FastAPI:
 
 
 app = create_application()
+
+app.add_middleware(LoggingMiddleware)  # noqa

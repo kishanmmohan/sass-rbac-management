@@ -1,11 +1,8 @@
-
-
 from sqlalchemy import Boolean, Column, DateTime, Enum, Integer, String
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
 from core.db import Base
-
 from .enums import UserTypeEnum
 
 

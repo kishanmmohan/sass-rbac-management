@@ -7,8 +7,11 @@ from components.users.repository import UserRepository
 from components.users.schema import CreateUserRequest, UpdateUserRequest, UserDetail, UserShort
 from components.users.service import UserService
 from core.db import get_db
+from core.middlewares.logging import get_logger
 
 router = APIRouter()
+
+logging = get_logger("users.api")
 
 
 # Dependency to get UserService
@@ -26,6 +29,8 @@ async def create_user(user: CreateUserRequest, user_service: UserService = Depen
 @router.get("/{user_id}", response_model=UserDetail, status_code=200)
 async def get_user(user_id: int, user_service: UserService = Depends(get_user_service)):
     user_data = await user_service.get_user_by_id(user_id)
+    logging.info(f"user_data: {user_data.name}")
+
     if not user_data:
         raise HTTPException(status_code=404, detail="User not found")
     return user_data

@@ -1,7 +1,6 @@
 from typing import List, Optional
 
-from pydantic import EmailStr
-
+from core.middlewares.logging import log_method, get_logger
 from .repository import UserRepository
 from .schema import CreateUserRequest, UpdateUserRequest, UserDetail, UserShort
 
@@ -9,6 +8,7 @@ from .schema import CreateUserRequest, UpdateUserRequest, UserDetail, UserShort
 class UserService:
     def __init__(self, user_repository: UserRepository):
         self.user_repository = user_repository
+        self.logging = get_logger(self.__class__.__name__)
 
     async def get_user(self, user_id: int):
         return await self.user_repository.get_user_by_id(user_id)
@@ -31,9 +31,11 @@ class UserService:
             updated_at=user_obj.updated_at
         )
 
+    @log_method()
     async def get_user_by_id(self, user_id: int) -> Optional[UserDetail]:
         """Fetch a user by ID."""
         user = await self.user_repository.get_user_by_id(user_id)
+        self.logging.info(f'User Service result: {user.name}')
         if user:
             return UserDetail(
                 id=user.id,
